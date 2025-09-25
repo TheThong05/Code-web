@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Exercise 36 - Nguyễn Thế Thông</title>
+  <style>
+    :root { --boxW: 224px; }
+
+    .wrap {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+
+    .menu {
+      width: var(--boxW);
+    }
+
+    h3 {
+      height: 50px;
+      width: 100%;
+      background: url("images/h3.png") no-repeat 0 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    ul {
+      margin: 0;
+      padding: 10px 10px 25px 45px;
+      background: url("images/ul.png") no-repeat 0 100%;
+      list-style-image: url("images/li.png");
+      min-height: 200px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    a:link,
+    a:visited {
+      color: #1a0dab;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: hotpink;
+    }
+
+    .menu.right ul li:first-child a {
+      color: red;
+      padding-left: 10px;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="menu left">
+      <h3></h3>
+      <ul>
+        <li><a href="#">Future</a></li>
+        <li><a href="#">Health</a></li>
+        <li><a href="#">Life</a></li>
+        <li><a href="#">Money</a></li>
+        <li><a href="#">Personal</a></li>
+        <li><a href="#">Phobias</a></li>
+      </ul>
+    </div>
+
+    <div class="menu right">
+      <h3></h3>
+      <ul>
+        <li><a href="#">Future</a></li>
+        <li><a href="#">Health</a></li>
+        <li><a href="#">Life</a></li>
+        <li><a href="#">Money</a></li>
+        <li><a href="#">Personal</a></li>
+        <li><a href="#">Phobias</a></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
