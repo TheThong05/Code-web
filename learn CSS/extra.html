@@ -1,0 +1,36 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Nguyễn Thế Thông</title>
+  <style>
+    .card-container {
+      position: relative;
+      width: 300px;
+      height: 200px;
+    }
+    .card-container img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.5s ease;
+    }
+    .card-container img.back {
+      opacity: 0;
+    }
+    .card-container:hover img.back {
+      opacity: 1;
+    }
+    .card-container:hover img.front {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <img src="truoc.jpg" class="front" alt="Mặt trước">
+    <img src="sau.jpg" class="back" alt="Mặt sau">
+  </div>
+</body>
+</html>
