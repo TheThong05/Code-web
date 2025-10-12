@@ -1,0 +1,70 @@
+<html>
+<head>
+	<title>Order Summary - Nguyễn Thế Thông</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			padding: 40px;
+			background: #f8f8f8;
+		}
+		h2 {
+			text-align: center;
+		}
+		table {
+			width: 600px;
+			margin: 0 auto;
+			border-collapse: collapse;
+			background: #fff;
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		}
+		th, td {
+			border: 1px solid #ccc;
+			padding: 10px;
+			text-align: center;
+		}
+		th {
+			background: #eee;
+		}
+		.total {
+			font-weight: bold;
+			background: #fff3cd;
+		}
+		a {
+			display: block;
+			text-align: center;
+			margin-top: 20px;
+			color: #d35400;
+			text-decoration: none;
+		}
+	</style>
+</head>
+<body>
+
+	<h2>Order Summary</h2>
+
+	<table>
+		<tr><th>Product</th><th>Qty</th><th>Subtotal ($)</th></tr>
+		<tr>
+			<td>Mouse</td>
+			<td><script>document.write(new URLSearchParams(location.search).get("qty1"));</script></td>
+			<td><script>document.write(new URLSearchParams(location.search).get("total1"));</script></td>
+		</tr>
+		<tr>
+			<td>Keyboard US</td>
+			<td><script>document.write(new URLSearchParams(location.search).get("qty2"));</script></td>
+			<td><script>document.write(new URLSearchParams(location.search).get("total2"));</script></td>
+		</tr>
+		<tr>
+			<td>USB KingMax</td>
+			<td><script>document.write(new URLSearchParams(location.search).get("qty3"));</script></td>
+			<td><script>document.write(new URLSearchParams(location.search).get("total3"));</script></td>
+		</tr>
+		<tr class="total">
+			<td colspan="2">Grand Total</td>
+			<td><script>document.write(new URLSearchParams(location.search).get("grandtotal"));</script></td>
+		</tr>
+	</table>
+
+	<a href="product.html">← Back to Product List</a>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<html>
+<head>
+	<title>Ex52 - Nguyễn Thế Thông</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			padding: 40px;
+			background-color: #fdfdfd;
+		}
+		h2 {
+			color: #333;
+		}
+		.data-box {
+			background: #fff;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+			width: 500px;
+		}
+		p span {
+			font-weight: bold;
+			color: #8b1c3c;
+		}
+		a {
+			display: inline-block;
+			margin-top: 15px;
+			color: #8b1c3c;
+			text-decoration: none;
+		}
+	</style>
+</head>
+<body>
+	<h2>Submitted Information</h2>
+	<div class="data-box">
+		<p><span>Full name:</span> <script>document.write(new URLSearchParams(window.location.search).get("fullname"));</script></p>
+		<p><span>Email:</span> <script>document.write(new URLSearchParams(window.location.search).get("email"));</script></p>
+		<p><span>Send to:</span> <script>document.write(new URLSearchParams(window.location.search).get("sendto"));</script></p>
+		<p><span>Title:</span> <script>document.write(new URLSearchParams(window.location.search).get("title"));</script></p>
+		<p><span>Content:</span> <script>document.write(new URLSearchParams(window.location.search).get("content"));</script></p>
+	</div>
+	<a href="contact.html">← Back to Contact Form</a>
+</body>
+</html>

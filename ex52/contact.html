@@ -1,0 +1,84 @@
+<html>
+<head>
+	<title>ex52 - Nguyễn Thế Thông</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f8f8f8;
+			display: flex;
+			justify-content: center;
+			padding-top: 40px;
+		}
+		form {
+			background: #fff;
+			padding: 30px;
+			width: 420px;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		}
+		h2 {
+			margin-bottom: 15px;
+			color: #333;
+		}
+		label {
+			display: block;
+			margin-top: 12px;
+			font-weight: bold;
+		}
+		input, select, textarea {
+			width: 100%;
+			padding: 8px;
+			margin-top: 5px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 14px;
+		}
+		textarea {
+			height: 100px;
+			resize: vertical;
+		}
+		button {
+			margin-top: 15px;
+			width: 100%;
+			padding: 10px;
+			background-color: #8b1c3c;
+			color: white;
+			font-size: 16px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+		button:hover {
+			background-color: #a22b4a;
+		}
+	</style>
+</head>
+<body>
+	<form action="result.html" method="get">
+		<h2>Contact the editorial office</h2>
+
+		<label for="fullname">Full name</label>
+		<input type="text" id="fullname" name="fullname" required/>
+
+		<label for="email">Email</label>
+		<input type="email" id="email" name="email" required/>
+
+		<label for="sendto">Send to</label>
+		<select id="sendto" name="sendto">
+			<option value="Editorial board">Editorial board</option>
+			<option value="News Department">News Department</option>
+			<option value="Board of Perspectives">Board of Perspectives</option>
+			<option value="World Board">World Board</option>
+			<option value="Business Department">Business Department</option>
+		</select>
+
+		<label for="title">Title</label>
+		<input type="text" id="title" name="title"/>
+
+		<label for="content">Content</label>
+		<textarea id="content" name="content"></textarea>
+
+		<button type="submit">Send</button>
+	</form>
+</body>
+</html>

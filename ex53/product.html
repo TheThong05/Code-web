@@ -1,0 +1,127 @@
+<html>
+<head>
+	<title>Product List - Nguyễn Thế Thông</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f8f8f8;
+			padding: 40px;
+			display: flex;
+			justify-content: center;
+		}
+		form {
+			background: #fff;
+			padding: 20px 30px;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		}
+		h2 {
+			margin-bottom: 10px;
+			text-align: center;
+		}
+		table {
+			border-collapse: collapse;
+			width: 600px;
+		}
+		th, td {
+			border: 1px solid #ccc;
+			padding: 10px;
+			text-align: center;
+		}
+		th {
+			background-color: #eee;
+		}
+		input[type="text"], input[type="number"] {
+			width: 80%;
+			padding: 5px;
+			text-align: right;
+		}
+		.total-row td {
+			border: none;
+			text-align: right;
+			font-weight: bold;
+		}
+		.btn {
+			background-color: orange;
+			color: #fff;
+			border: none;
+			padding: 10px 20px;
+			font-size: 16px;
+			cursor: pointer;
+			border-radius: 4px;
+		}
+		.btn:hover {
+			background-color: darkorange;
+		}
+	</style>
+</head>
+<body>
+
+	<form action="result.html" method="get">
+		<h2>List of Products</h2>
+		<table>
+			<tr>
+				<th>Part Number</th>
+				<th>Description</th>
+				<th>Price</th>
+				<th>Qty</th>
+				<th>Item total</th>
+			</tr>
+			<tr>
+				<td>C112</td>
+				<td>Mouse</td>
+				<td>19.95$</td>
+				<td><input type="number" name="qty1" min="0" value="0"></td>
+				<td><input type="text" name="total1" readonly></td>
+			</tr>
+			<tr>
+				<td>B124</td>
+				<td>Keyboard US</td>
+				<td>29.95$</td>
+				<td><input type="number" name="qty2" min="0" value="0"/></td>
+				<td><input type="text" name="total2" readonly/></td>
+			</tr>
+			<tr>
+				<td>U125</td>
+				<td>USB KingMax</td>
+				<td>39.95$</td>
+				<td><input type="number" name="qty3" min="0" value="0"/></td>
+				<td><input type="text" name="total3" readonly/></td>
+			</tr>
+			<tr class="total-row">
+				<td colspan="4">Total:</td>
+				<td><input type="text" name="grandtotal" readonly/></td>
+			</tr>
+		</table>
+
+		<div style="text-align:right; margin-top:15px;">
+			<button type="button" class="btn" onclick="calculateSum()">Preview Total</button>
+			<button type="submit" class="btn">Sum</button>
+		</div>
+	</form>
+
+	<script>
+		function calculateSum() {
+			// Prices
+			const price1 = 19.95, price2 = 29.95, price3 = 39.95;
+
+			// Get quantities
+			const q1 = parseFloat(document.querySelector('[name=qty1]').value) || 0;
+			const q2 = parseFloat(document.querySelector('[name=qty2]').value) || 0;
+			const q3 = parseFloat(document.querySelector('[name=qty3]').value) || 0;
+
+			// Compute totals
+			const t1 = q1 * price1;
+			const t2 = q2 * price2;
+			const t3 = q3 * price3;
+			const total = t1 + t2 + t3;
+
+			// Display
+			document.querySelector('[name=total1]').value = t1.toFixed(2);
+			document.querySelector('[name=total2]').value = t2.toFixed(2);
+			document.querySelector('[name=total3]').value = t3.toFixed(2);
+			document.querySelector('[name=grandtotal]').value = total.toFixed(2);
+		}
+	</script>
+</body>
+</html>
