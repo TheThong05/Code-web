@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>AI Gợi Ý Phối Đồ</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="container">
+		<h1>👗 AI Gợi Ý Phối Đồ 👕</h1>
+
+		<form id="outfitForm">
+			<label>Giới tính:</label>
+			<select id="gender">
+				<option value="male">Nam</option>
+				<option value="female">Nữ</option>
+			</select>
+
+			<label>Phong cách:</label>
+			<select id="style">
+				<option value="street">Streetwear</option>
+				<option value="office">Công sở</option>
+				<option value="minimal">Tối giản</option>
+				<option value="sporty">Thể thao</option>
+			</select>
+
+			<label>Thời tiết:</label>
+			<select id="weather">
+				<option value="hot">Nóng</option>
+				<option value="cool">Mát mẻ</option>
+				<option value="cold">Lạnh</option>
+			</select>
+
+			<button type="button" id="generateBtn">Gợi ý ngay</button>
+		</form>
+
+		<div id="result" class="result-box">
+			<p>✨ Kết quả gợi ý sẽ hiển thị ở đây...</p>
+		</div>
+	</div>
+
+	<script src="app.js"></script>
+</body>
+</html>
