@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <title>Exercise 66 - Nguyễn Thế Thông</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f8f8f8;
+            }
+            table {
+                border-collapse: collapse;
+                width: 45%;
+                margin: 50px auto;
+                background-color: white;
+                box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            }
+            th {
+                background-color: #d9ead3;
+                font-size: 20px;
+                padding: 10px;
+                text-align: center;
+            }
+            td {
+                border: 1px solid #333;
+                padding: 8px 12px;
+                font-size: 16px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <table id="studentTable">
+            <tr><th colspan="2">Student Information</th></tr>
+            <tbody id="infoBody"></tbody>
+        </table>
+
+        <script>
+            const xmlString = `
+            <student>
+                <id>987456</id>
+                <name>Marie Curie</name>
+                <birthday>7/11/1867</birthday>
+                <gender>Woman</gender>
+            </student>`;
+
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+            const id = xmlDoc.getElementsByTagName("id")[0].textContent;
+            const name = xmlDoc.getElementsByTagName("name")[0].textContent;
+            const birthday = xmlDoc.getElementsByTagName("birthday")[0].textContent;
+            const gender = xmlDoc.getElementsByTagName("gender")[0].textContent;
+
+            const infoBody = document.getElementById("infoBody");
+            const rows = [
+                ["Student ID:", id],
+                ["Student Name:", name],
+                ["Birthday:", birthday],
+                ["Gender:", gender]
+            ];
+
+            rows.forEach(([label, value]) => {
+                const tr = document.createElement("tr");
+                tr.className = "data-row";
+
+                const td1 = document.createElement("td");
+                td1.innerHTML = "<b>" + label + "</b>";
+
+                const td2 = document.createElement("td");
+                td2.textContent = value;
+
+                tr.onmouseover = () => {
+                    tr.style.backgroundColor = "blue";
+                    tr.style.color = "white";
+                };
+                tr.onmouseout = () => {
+                    tr.style.backgroundColor = "white";
+                    tr.style.color = "black";
+                };
+
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                infoBody.appendChild(tr);
+            });
+        </script>
+    </body>
+</html>
