@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <title>Nguyễn Thế Thông</title>
+
+    </head>
+    <body>
+        <table border="1">
+            <caption>List of Books:</caption>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Year</th>
+                    <th>Cover</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="book_tbody">
+
+            </tbody>
+        </table>
+        <script type="text/javascript">
+            var xhr =new XMLHttpRequest();
+            xhr.open("GET","datasets/books_cover.xml",true);
+            xhr.send();
+            xhr.onreadystatechange=function()
+            {
+                if (xhr.readyState==4 && xhr.status==200)
+                {
+                    
+                    var xmlDoc =xhr.responseXML
+                    var books=xmlDoc.getElementsByTagName("book")
+                    for (i=0; i<books.length;i++)
+                    {
+                        book=books[i]
+                        td_title=book.getElementsByTagName("title")[0].childNodes[0].nodeValue
+                        author=book.getElementsByTagName("author")[0].childNodes[0].nodeValue
+                        year=book.getElementsByTagName("year")[0].childNodes[0].nodeValue
+                        cover=book.getElementsByTagName("cover")[0].childNodes[0].nodeValue
+
+                        var tr=document.createElement("tr")
+
+                        var td_title=document.createElement("td")
+                        td_title.innerText=title
+                        tr.appendChild(td_title)
+
+                        var td_author=document.createElement("td")
+                        td_author.innerText=author
+                        tr.appendChild(td_author)
+
+                        var td_year=document.createElement("td")
+                        td_year.innerText=year
+                        tr.appendChild(td_year)
+
+                        var td_cover=document.createElement("td")
+                        var img_cover=document.createElement("img")
+                        img_cover.src=cover
+                        img_cover.width=100
+                        td_cover.appendChild(img_cover)
+                        tr.appendChild(td_cover)
+
+                        var td_actions=document.createElement("td")
+                        var btn_details=document.createElement("button")
+                        btn_details.innerText="Details"
+                        td_actions.appendChild(btn_details)
+                        tr.appendChild(td_actions)
+
+                        book_tbody.appendChild(tr)
+                    }
+                    title=xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue;
+                    td_title.innerText=title
+                    author=xmlDoc.getElementsByTagName("author")[0].childNodes[0].nodeValue;
+                    td_author.innerText=author
+                    year=xmlDoc.getElementsByTagName("year")[0].childNodes[0].nodeValue;
+                    td_year.innerText=year
+                }
+                else
+                {
+                    //handling when data can't be loaded
+                }
+            }
+        </script>
+    </body>
+</html>

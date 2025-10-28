@@ -1,4 +1,8 @@
-<textarea name="comment" rows="5" cols="30">
-Type your feedback here...
-</textarea>
-<!--comment-->
+<p id="demo">Đoạn này sẽ thay đổi.</p>
+<button onclick="changeText()">Bấm vào tôi!</button>
+
+<script>
+	function changeText() {
+		document.getElementById("demo").innerHTML = "Xin chào, bạn vừa bấm nút!";
+	}
+</script>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nguyen The Thong</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:28px}
+        .container{max-width:1200px;margin:0 auto;background:rgba(255,255,255,0.98);border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+        h1{text-align:center;color:#333;margin-bottom:18px;font-size:2rem;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+        /* Grid layout: left sidebar (cities) + right main (weather) */
+        .grid{display:grid;grid-template-columns:320px 1fr;gap:20px}
+
+        /* Sidebar */
+        .sidebar{background:#fff;border-radius:12px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.06);display:flex;flex-direction:column}
+        .search{display:flex;gap:8px;margin-bottom:12px}
+        .search input{flex:1;padding:8px 10px;border:2px solid #e6e9ec;border-radius:8px;font-size:0.95rem}
+        .city-list{overflow:auto;border-top:1px solid #f0f0f0;padding-top:8px}
+        .city-item{padding:10px;border-radius:8px;cursor:pointer;color:#333;font-weight:600;border:1px solid transparent;margin-bottom:8px}
+        .city-item:hover{background:linear-gradient(90deg,#f4f6ff,#eef2ff);transform:translateX(4px)}
+        .city-item.active{background:linear-gradient(90deg,#667eea,#764ba2);color:white;border-color:rgba(0,0,0,0.03)}
+
+        /* Main weather area */
+        .main{display:flex;flex-direction:column;gap:18px}
+        .current-weather{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:26px;border-radius:12px;display:flex;gap:18px;align-items:center}
+        .current-left{flex:1}
+        .current-right{width:120px;text-align:center}
+        .temp{font-size:3.6rem;font-weight:700}
+        .desc{font-size:1.1rem;text-transform:capitalize;margin-bottom:6px}
+        .small{font-size:0.95rem;opacity:.95}
+
+        .details{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+        .detail-item{background:rgba(255,255,255,0.12);padding:8px 12px;border-radius:8px}
+
+        .hourly-forecast{background:#fff;border-radius:12px;padding:14px;box-shadow:0 8px 20px rgba(0,0,0,.05)}
+        .hourly-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+        .hour-card{background:linear-gradient(180deg,#f8fafc,#eef3ff);padding:12px;border-radius:8px;text-align:center}
+        .hour-card .hour-temp{font-weight:700;margin:8px 0}
+
+        .loading,.error{text-align:center;padding:12px;border-radius:10px}
+        .loading{color:#667eea}
+        .error{background:#fff0f0;border:1px solid #ffd6d6;color:#a33}
+
+        @media(max-width:880px){.grid{grid-template-columns:1fr}.sidebar{order:2}.main{order:1}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌤️ Dự Báo Thời Tiết Việt Nam</h1>
+        
+        <div class="grid">
+            <aside class="sidebar" aria-label="Danh sách tỉnh thành">
+                <div class="search">
+                    <input id="citySearch" placeholder="Tìm tỉnh/thành..." aria-label="Tìm tỉnh" />
+                    <button id="resetBtn" title="Hiện tất cả">⟳</button>
+                </div>
+                <div id="cityList" class="city-list" role="listbox" tabindex="0" style="max-height:60vh"></div>
+            </aside>
+
+            <main class="main">
+                <div id="loadingDiv" class="loading" style="display:none">⏳ Đang tải dữ liệu thời tiết...</div>
+                <div id="errorDiv" class="error" style="display:none"></div>
+
+                <section id="weatherContainer" class="weather-area" style="display:none">
+                    <div class="current-weather">
+                        <div class="current-left">
+                            <div class="small">Dự báo cho</div>
+                            <h2 id="cityName">-</h2>
+                            <div class="desc" id="currentDesc"></div>
+                            <div class="temp" id="currentTemp">--°C</div>
+                            <div class="details">
+                                <div class="detail-item"><span class="small">💧 Độ ẩm</span><div id="humidity">-</div></div>
+                                <div class="detail-item"><span class="small">💨 Gió</span><div id="windSpeed">-</div></div>
+                                <div class="detail-item"><span class="small">🌡️ Cảm giác</span><div id="feelsLike">-</div></div>
+                                <div class="detail-item"><span class="small">👁️ Tầm nhìn</span><div id="visibility">-</div></div>
+                            </div>
+                        </div>
+                        <div class="current-right">
+                            <img id="currentIcon" src="" alt="Icon" style="width:96px;height:96px;object-fit:contain;display:block;margin:0 auto"/>
+                        </div>
+                    </div>
+
+                    <div class="hourly-forecast">
+                        <h3 style="margin:8px 0 14px 0">Dự báo theo giờ</h3>
+                        <div id="hourlyGrid" class="hourly-grid"></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu tỉnh thành Việt Nam với ID từ cnnd.vn
+        const cities = [
+            {id: '2347719', name: 'An Giang'},
+            {id: '20070078', name: 'Bình Dương'},
+            {id: '20070086', name: 'Bình Phước'},
+            {id: '2347731', name: 'Bình Thuận'},
+            {id: '2347730', name: 'Bình Định'},
+            {id: '20070081', name: 'Bạc Liêu'},
+            {id: '20070087', name: 'Bắc Giang'},
+            {id: '20070084', name: 'Bắc Kạn'},
+            {id: '20070088', name: 'Bắc Ninh'},
+            {id: '2347703', name: 'Bến Tre'},
+            {id: '2347704', name: 'Cao Bằng'},
+            {id: '20070082', name: 'Cà Mau'},
+            {id: '2347732', name: 'Cần Thơ'},
+            {id: '28301718', name: 'Điện Biên'},
+            {id: '20070085', name: 'Đà Nẵng'},
+            {id: '1252375', name: 'Đà Lạt'},
+            {id: '2347720', name: 'Đắk Lắk'},
+            {id: '28301719', name: 'Đắk Nông'},
+            {id: '2347721', name: 'Đồng Nai'},
+            {id: '2347722', name: 'Đồng Tháp'},
+            {id: '2347733', name: 'Gia Lai'},
+            {id: '2347727', name: 'Hà Nội'},
+            {id: '2347728', name: 'TP. Hồ Chí Minh'},
+            {id: '2347734', name: 'Hà Giang'},
+            {id: '2347741', name: 'Hà Nam'},
+            {id: '2347736', name: 'Hà Tĩnh'},
+            {id: '2347737', name: 'Hòa Bình'},
+            {id: '20070079', name: 'Hưng Yên'},
+            {id: '20070080', name: 'Hải Dương'},
+            {id: '2347707', name: 'Hải Phòng'},
+            {id: '28301720', name: 'Hậu Giang'},
+            {id: '2347738', name: 'Khánh Hòa'},
+            {id: '2347723', name: 'Kiên Giang'},
+            {id: '20070076', name: 'Kon Tum'},
+            {id: '2347708', name: 'Lai Châu'},
+            {id: '2347710', name: 'Long An'},
+            {id: '2347740', name: 'Lào Cai'},
+            {id: '2347709', name: 'Lâm Đồng'},
+            {id: '2347718', name: 'Lạng Sơn'},
+            {id: '20070089', name: 'Nam Định'},
+            {id: '2347742', name: 'Nghệ An'},
+            {id: '2347743', name: 'Ninh Bình'},
+            {id: '2347744', name: 'Ninh Thuận'},
+            {id: '20070091', name: 'Phú Thọ'},
+            {id: '2347745', name: 'Phú Yên'},
+            {id: '2347746', name: 'Quảng Bình'},
+            {id: '2347711', name: 'Quảng Nam'},
+            {id: '20070077', name: 'Quảng Ngãi'},
+            {id: '2347712', name: 'Quảng Ninh'},
+            {id: '2347747', name: 'Quảng Trị'},
+            {id: '2347748', name: 'Sóc Trăng'},
+            {id: '2347713', name: 'Sơn La'},
+            {id: '2347715', name: 'Thanh Hóa'},
+            {id: '2347716', name: 'Thái Bình'},
+            {id: '20070083', name: 'Thái Nguyên'},
+            {id: '2347749', name: 'Thừa Thiên Huế'},
+            {id: '2347717', name: 'Tiền Giang'},
+            {id: '2347750', name: 'Trà Vinh'},
+            {id: '2347751', name: 'Tuyên Quang'},
+            {id: '2347714', name: 'Tây Ninh'},
+            {id: '2347752', name: 'Vĩnh Long'},
+            {id: '20070090', name: 'Vĩnh Phúc'},
+            {id: '2347729', name: 'Vũng Tàu'},
+            {id: '2347753', name: 'Yên Bái'}
+        ];
+
+        // API URL base (kept for reference)
+        const WEATHER_API_BASE = 'https://utils3.cnnd.vn/ajax/weatherinfo/';
+
+        // Elements
+        const cityListEl = document.getElementById('cityList');
+        const citySearch = document.getElementById('citySearch');
+        const resetBtn = document.getElementById('resetBtn');
+        const loadingDiv = document.getElementById('loadingDiv');
+        const errorDiv = document.getElementById('errorDiv');
+
+        // Render the city list (filter optional)
+        function renderCityList(filter = ''){
+            cityListEl.innerHTML = '';
+            const normalizedFilter = filter.trim().toLowerCase();
+            cities.forEach(city => {
+                if (normalizedFilter && !city.name.toLowerCase().includes(normalizedFilter)) return;
+                const div = document.createElement('div');
+                div.className = 'city-item';
+                div.textContent = city.name;
+                div.dataset.id = city.id;
+                div.setAttribute('role','option');
+                div.addEventListener('click', () => selectCity(city.id, city.name, div));
+                cityListEl.appendChild(div);
+            });
+        }
+
+        // Set active visual state on selected city element
+        function setActiveElement(el){
+            document.querySelectorAll('.city-item').forEach(item => item.classList.remove('active'));
+            if(el) el.classList.add('active');
+        }
+
+        // When a city is chosen from sidebar
+        function selectCity(id, name, el){
+            setActiveElement(el);
+            getWeatherData(id, name);
+        }
+
+        // Hook up search and reset
+        citySearch.addEventListener('input', (e) => renderCityList(e.target.value));
+        resetBtn.addEventListener('click', () => { citySearch.value=''; renderCityList(); citySearch.focus(); });
+
+        // Hàm lấy dữ liệu thời tiết bằng cách sử dụng proxy (allorigins)
+        async function getWeatherData(cityId, cityName) {
+            const weatherContainer = document.getElementById('weatherContainer');
+            loadingDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
+            weatherContainer.style.display = 'none';
+
+            try {
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://utils3.cnnd.vn/ajax/weatherinfo/' + cityId + '.htm')}`;
+                console.log('Fetching weather for:', cityName, proxyUrl);
+
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error(`Không thể lấy dữ liệu (Status: ${response.status})`);
+
+                const result = await response.json();
+                const apiData = JSON.parse(result.contents);
+
+                if (!apiData.Data || !apiData.Data.data || !apiData.Data.data.datainfo) throw new Error('Không tìm thấy dữ liệu thời tiết');
+
+                const weatherInfo = apiData.Data.data.datainfo;
+                displayWeather(weatherInfo, cityName);
+            } catch (error) {
+                console.error('Error:', error);
+                errorDiv.textContent = `❌ Lỗi: ${error.message}`;
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // Hiển thị thông tin thời tiết (giữ logic giống trước)
+        function displayWeather(weatherInfo, cityName) {
+            document.getElementById('cityName').textContent = cityName;
+            document.getElementById('currentTemp').textContent = (weatherInfo.temperature ?? '--') + '°C';
+            document.getElementById('currentDesc').textContent = weatherInfo.status || 'Không rõ';
+
+            const iconElement = document.getElementById('currentIcon');
+            if (weatherInfo.shadow_icon) { iconElement.src = weatherInfo.shadow_icon; iconElement.style.display='block'; }
+            else { iconElement.style.display='none'; }
+
+            document.getElementById('humidity').textContent = weatherInfo.humidity ?? 'N/A';
+            document.getElementById('windSpeed').textContent = weatherInfo.wind ? `${weatherInfo.wind.index} ${weatherInfo.wind.unit}` : 'N/A';
+            document.getElementById('feelsLike').textContent = weatherInfo.feels_like ? `${weatherInfo.feels_like}°C` : 'N/A';
+            document.getElementById('visibility').textContent = weatherInfo.visibility ? `${weatherInfo.visibility.index} ${weatherInfo.visibility.unit}` : 'N/A';
+
+            const hourlyGrid = document.getElementById('hourlyGrid');
+            hourlyGrid.innerHTML = '';
+            if (Array.isArray(weatherInfo.hourly_temperature) && weatherInfo.hourly_temperature.length) {
+                weatherInfo.hourly_temperature.forEach(item => {
+                    const hourCard = document.createElement('div');
+                    hourCard.className = 'hour-card';
+                    const img = item.shadow_icon ? `<img src="${item.shadow_icon}" alt="icon" style="width:48px;height:48px;object-fit:contain">` : '';
+                    hourCard.innerHTML = `
+                        <div class="time">${item.time}:00</div>
+                        ${img}
+                        <div class="hour-temp">${item.temperature}°C</div>
+                        <div class="hour-desc">${item.status || ''}</div>
+                    `;
+                    hourlyGrid.appendChild(hourCard);
+                });
+            } else {
+                hourlyGrid.innerHTML = '<div style="padding:12px">Không có dữ liệu theo giờ</div>';
+            }
+
+            document.getElementById('weatherContainer').style.display = 'block';
+        }
+
+        // Khởi tạo: render danh sách và tự load Hà Nội
+        window.addEventListener('load', () => {
+            renderCityList();
+            const hanoiCity = cities.find(c => c.name === 'Hà Nội');
+            if (hanoiCity) {
+                // highlight Hà Nội in the list
+                const firstEl = document.querySelector(`.city-item[data-id="${hanoiCity.id}"]`);
+                if (firstEl) setActiveElement(firstEl);
+                getWeatherData(hanoiCity.id, hanoiCity.name);
+            }
+        });
+    </script>
+</body>
+</html>
